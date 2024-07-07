@@ -7,10 +7,7 @@ def generate_soundex(name):
     
     for char in name[1:].upper():
         if char.isalpha():
-            code = codes[ord(char) - ord('A')]
-            if code != '0' and code != soundex[-1]:
-                soundex += code
-                if len(soundex) == 4:
-                    break
+            soundex += codes[ord(char) - ord('A')]
     
-    return soundex.ljust(4, '0')
+    return (soundex[:4] + "000")[:4]
+
