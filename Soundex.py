@@ -4,32 +4,26 @@ def generate_soundex(name):
     
     first_letter = name[0].upper()
     encoded = encode_remaining(name[1:].upper())
-    truncated = truncate_to_three(encoded)
-    padded = pad_with_zeros(first_letter + truncated)
-    
-    return padded
+    return pad_with_zeros(first_letter + encoded)
 
 def encode_remaining(remaining):
+    codes = [get_code(char) for char in remaining]
+    return ''.join(filter_codes(codes))
+
+def get_code(char):
     mapping = {'BFPV': '1', 'CGJKQSXZ': '2', 'DT': '3', 'L': '4', 'MN': '5', 'R': '6'}
-    encoded = ""
+    return next((code for key, code in mapping.items() if char in key), '0')
+
+def filter_codes(codes):
+    result = []
     prev_code = '0'
-    
-    for char in remaining:
-        code = get_code(char, mapping)
+    for code in codes:
         if code != '0' and code != prev_code:
-            encoded += code
+            result.append(code)
             prev_code = code
-    
-    return encoded
-
-def get_code(char, mapping):
-    for key, value in mapping.items():
-        if char in key:
-            return value
-    return '0'
-
-def truncate_to_three(encoded):
-    return encoded[:3]
+        if len(result) == 3:
+            break
+    return result
 
 def pad_with_zeros(soundex):
     return soundex.ljust(4, '0')
